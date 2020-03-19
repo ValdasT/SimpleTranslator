@@ -14,7 +14,7 @@ namespace SimpleTranslator
             string i = "y";
             while (i == "y")
             {
-                var ats = await test();
+                var ats = await translator();
                 Console.WriteLine(ats);
 
                 Console.WriteLine("Versti dar karta? Jei taip - iveskite y");
@@ -25,11 +25,10 @@ namespace SimpleTranslator
                 }
             }
 
-            static async Task<string> test()
+            static async Task<string> translator()
             {
-                var eggsTask = translatorMeniu();
-                var eggs = await eggsTask;
-                return eggs;
+                var text = await translatorMeniu();
+                return text;
             }
         }
         static async Task<string> translatorMeniu()
@@ -46,26 +45,25 @@ namespace SimpleTranslator
                 langFrom = "lt";
                 langTo1 = "en";
                 langTo2 = "ru";
-                var eggsTask = translateText(word, langFrom, langTo1, langTo2);
-                return await eggsTask;
+                return await translateText(word, langFrom, langTo1, langTo2);
             }
-            // else if (option == "2")
-            // {
-            //     var eggsTask = translateText("gg");
-            //     return await eggsTask;
-            // }
-            //  else if (option == "3")
-            // {
-            //     var eggsTask = translateText("gg");
-            //     return await eggsTask;
-            // }
-            await translatorMeniu();
-            word = typeWord();
-            langFrom = "lt";
-            langTo1 = "en";
-            langTo2 = "ru";
-            var eggsTask2 = translateText(word, langFrom, langTo1, langTo2);
-            return await eggsTask2;
+            else if (option == "2")
+            {
+                word = typeWord();
+                langFrom = "en";
+                langTo1 = "ru";
+                langTo2 = "lt";
+                return await translateText(word, langFrom, langTo1, langTo2);
+            }
+            else if (option == "3")
+            {
+                word = typeWord();
+                langFrom = "ru";
+                langTo1 = "en";
+                langTo2 = "lt";
+                return await translateText(word, langFrom, langTo1, langTo2);
+            }
+            return "Blogas pasirinkimas";
         }
 
         static string typeWord()
@@ -78,7 +76,7 @@ namespace SimpleTranslator
         static async Task<string> translateText(string word, string langFrom, string langTo1, string langTo2)
         {
             string url1 = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + langFrom + "&tl=" + langTo1 + "&dt=t&q=" + word;
-              string url2 = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + langFrom + "&tl=" + langTo2 + "&dt=t&q=" + word;
+            string url2 = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + langFrom + "&tl=" + langTo2 + "&dt=t&q=" + word;
             using var client = new HttpClient();
 
             var response1 = await client.GetAsync(url1);
@@ -86,10 +84,11 @@ namespace SimpleTranslator
 
             string result1 = response1.Content.ReadAsStringAsync().Result;
             var output1 = JsonConvert.DeserializeObject<List<dynamic>>(result1);
-             string result2 = response2.Content.ReadAsStringAsync().Result;
+            string result2 = response2.Content.ReadAsStringAsync().Result;
             var output2 = JsonConvert.DeserializeObject<List<dynamic>>(result2);
             StringBuilder ats = new StringBuilder();
             ats.AppendFormat("Vertimas:| {0} |  {1}  |", output1[0][0][0], output2[0][0][0]);
+            ats.AppendLine();
             return ats.ToString();
         }
     }
