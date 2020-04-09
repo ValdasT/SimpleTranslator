@@ -87,20 +87,28 @@ namespace SimpleTranslator
             var output1 = JsonConvert.DeserializeObject<List<dynamic>>(result1);
             string result2 = response2.Content.ReadAsStringAsync().Result;
             var output2 = JsonConvert.DeserializeObject<List<dynamic>>(result2);
-            if (langFrom == "lt")
+            if (word.Length > 30)
             {
-                printAnswer(word, output2[0][0][0].ToString(), output1[0][0][0].ToString());
-            }
-            else if (langFrom == "ru")
-            {
-                printAnswer(output1[0][0][0].ToString(), word, output2[0][0][0].ToString());
+                Console.WriteLine("Per ilgas ivestas sakinys!");
             }
             else
             {
-                printAnswer( output2[0][0][0].ToString(), output1[0][0][0].ToString(), word);
+                if (langFrom == "lt")
+                {
+                    printAnswer(word, output2[0][0][0].ToString(), output1[0][0][0].ToString());
+                }
+                else if (langFrom == "ru")
+                {
+                    printAnswer(output1[0][0][0].ToString(), word, output2[0][0][0].ToString());
+                }
+                else
+                {
+                    printAnswer(output2[0][0][0].ToString(), output1[0][0][0].ToString(), word);
+                }
+
             }
             StringBuilder ats = new StringBuilder();
-            ats.AppendFormat("Vertimas:| {0} |  {1}  |", output1[0][0][0], output2[0][0][0]);
+            // ats.AppendFormat("Vertimas:| {0} |  {1}  |", output1[0][0][0], output2[0][0][0]);
             ats.AppendLine();
             return ats.ToString();
         }
