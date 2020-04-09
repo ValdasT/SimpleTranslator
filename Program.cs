@@ -15,7 +15,7 @@ namespace SimpleTranslator
             while (i == "y")
             {
                 var ats = await translator();
-                Console.WriteLine(ats);
+                // Console.WriteLine(ats);
 
                 Console.WriteLine("Versti dar karta? Jei taip - iveskite y");
                 var option = Console.ReadLine();
@@ -68,6 +68,7 @@ namespace SimpleTranslator
 
         static string typeWord()
         {
+            Console.Clear();
             Console.WriteLine("Iveskite zodi:");
             string word = Console.ReadLine();
             return word;
@@ -86,10 +87,44 @@ namespace SimpleTranslator
             var output1 = JsonConvert.DeserializeObject<List<dynamic>>(result1);
             string result2 = response2.Content.ReadAsStringAsync().Result;
             var output2 = JsonConvert.DeserializeObject<List<dynamic>>(result2);
+            if (langFrom == "lt")
+            {
+                printAnswer(word, output2[0][0][0].ToString(), output1[0][0][0].ToString());
+            }
+            else if (langFrom == "ru")
+            {
+                printAnswer(output1[0][0][0].ToString(), word, output2[0][0][0].ToString());
+            }
+            else
+            {
+                printAnswer( output2[0][0][0].ToString(), output1[0][0][0].ToString(), word);
+            }
             StringBuilder ats = new StringBuilder();
             ats.AppendFormat("Vertimas:| {0} |  {1}  |", output1[0][0][0], output2[0][0][0]);
             ats.AppendLine();
             return ats.ToString();
+        }
+
+        public static void printLine(params string[] line)
+        {
+            int size = 100 / line.Length;
+            string row = "";
+
+            foreach (string element in line)
+            {
+                row += "|" + element.PadRight(size - (size - element.Length) / 2).PadLeft(size);
+            }
+            row += "|";
+            Console.WriteLine(row);
+        }
+
+        public static void printAnswer(string liet, string rus, string eng)
+        {
+            Console.WriteLine("Vertimas:");
+            printLine("lietuviu kalba", "rusu kalba", "anglu kalba");
+            Console.WriteLine(new string('-', 103));
+            printLine(liet, rus, eng);
+            Console.WriteLine();
         }
     }
 }
